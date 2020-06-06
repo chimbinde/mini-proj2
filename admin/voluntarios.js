@@ -32,7 +32,7 @@ window.onload = () => {
             const newSpeaker = await response.json();
         } else {
             // Atualiza Orador
-            response = await fetch(`${urlBase}/membro/${txtSpeakerId}`, {
+            response = await fetch(`${urlBase}/voluntario/${txtSpeakerId}`, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
@@ -95,13 +95,23 @@ window.onload = () => {
                     cancelButtonText: 'Cancelar',
                     confirmButtonText: 'Remover'
                   }).then( async (result) => {
-                    if (result.value) {                        
-                        let voluntarioId = btnDelete[i].getAttribute("id")
+                    if (result.value) {   
+                        let voluntarioId = btnDelete[i].getAttribute("id")                     
+                       // let voluntarioId = btnDelete[i].getAttribute("id")
                         try {
-                            const response = await fetch(`${urlBase}/conferences/1/participants/${voluntarioId}`, { method: "DELETE"})
-                            const participants = await response.json()                            
-                            swal('Removido!','O voluntario foi removido da Conferência.','success')
-                            renderVoluntarios()
+
+                            const urlll= `${urlBase}/voluntario/del/${voluntarioId}`;
+                            const response = await fetch(`${urlBase}/voluntario/del/${voluntarioId}`, 
+                                {
+                                 method: "GET"
+                                }
+                            );  
+                            const newSpeakerId = response.headers.get("Location");
+                            const newSpeaker = await response.json();
+
+                            renderVoluntarios();
+                            sms("Ilimnado com sucesso ...", 1);
+
                         } catch(err) {
                             swal({type: 'error', title: 'Erro', text: err})
                         }
