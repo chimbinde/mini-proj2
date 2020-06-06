@@ -92,6 +92,9 @@
       <div class="container-fluid">
 
         <div class="jumbotron">
+          <div class="row" id="divSMS" style="display: none; width: 100%;" >
+            
+          </div>
           <h1 class="display-3">Membros</h1>
           <p class="lead">Gestão inscritos na WebConference</p>
           <hr class="my-2">
@@ -99,8 +102,61 @@
 
           <!--################## PARTICIPANTES ###################-->
           <div id="divMembros" class="container">
+
+            <div class="card cartao" style="display:none;" id="cartao">
+              <div class="card-footer">Cadastro de novo membro</div>
+              <div class="card-body">
+                  <form id="frmMembers" action="/admin/membros/criar" method="post">
+                      <input type="hidden" id="txtSpeakerId">
+                      <div class="row" >    
+                        <div class="form-group col">
+                            <label for="nome">Nome</label>
+                            <input type="text" placeholder="nome" class="form-control" id="nome" name="nome" required>
+                        </div>                    
+                        <div class="form-group col">
+                            <label for="apelido">Apelido</label>
+                            <input type="text" placeholder="apelido" class="form-control" id="apelido"  name="apelido" required>
+                        </div>
+                     </div>
+                    <div class="row" >    
+                        <div class="form-group col">
+                            <label for="email">Email</label>
+                            <input type="text" placeholder="email" class="form-control" id="email" name="email" required>
+                        </div>                    
+                        <div class="form-group col">
+                            <label for="anoInicio">Ano Inicio</label>
+                            <input type="text" placeholder="anoInicio" class="form-control" id="anoInicio" name="anoInicio" required>
+                        </div>
+                     </div>
+                      <div class="row" >    
+                        <div class="form-group col">
+                            <label for="password">senha</label>
+                            <input type="password" placeholder="password" class="form-control" name="password" id="password" required>
+                        </div>                    
+                        <div class="form-group col">
+                            <label for="confPassword">Confirmar senha</label>
+                            <input type="password" placeholder="password" class="form-control" name="confPassword" id="confPassword" required>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                            <button id="btnSalvar"type="submit" class="btn btn-success btnSalvar">Salvar</button>
+              
+                     </div> 
+                  </form>
+              </div>
+              <div class="card-footer">
+                
+                  <a href="#" onclick="novo(0)">
+                      <i class='fas fa-times btnFechar'></i>  
+                  </a>
+              </div>
+            </div>
+
+
+              <!-- fecho de formulario de cadastro -->
+              <button id="btnNovo" onclick="novo(1)"  class="btn btn-primary btnNovo mt-2">Novo</button>
             <!-- Table -->
-            <div class="table-responsive">
+            <div class="table-responsive mt-2">
               <table id="tblMembros" class="table table-sm">
               </table>
             </div>

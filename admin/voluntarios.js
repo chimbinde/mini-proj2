@@ -1,33 +1,78 @@
 
-const urlBase = "https://fcawebbook.herokuapp.com"
+//const urlBase = "https://fcawebbook.herokuapp.com";
+const urll='https://cors-anywhere.herokuapp.com/';
+const url2='https://floating-cove-14952.herokuapp.com';
+const urlBase= urll+url2;
+let isNew = true;
 
 window.onload = () => {
     // References to HTML objects   
-    const btnParticipant = document.getElementById("btnParticipant")
-    const tblVoluntarios = document.getElementById("tblVoluntarios")
+    const btnParticipant = document.getElementById("btnParticipant");
+    const tblVoluntarios = document.getElementById("tblVoluntarios");
+    const frmVoluntarios = document.getElementById("frmVoluntarios");
+
+    frmVoluntarios.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const nome = document.getElementById("nome").value;
+        const apelido = document.getElementById("apelido").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confPassword = document.getElementById("confPassword").value;
+        let response
+        if (isNew) {
+            // Adiciona Orador
+            response = await fetch(`${urlBase}/voluntario/criar`, {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                method: "POST",
+                body: `nome=${nome}&apelido=${apelido}&email=${email}&password=${password}&confPassword=${confPassword}`
+            });
+            const newSpeakerId = response.headers.get("Location");
+            const newSpeaker = await response.json();
+        } else {
+            // Atualiza Orador
+            response = await fetch(`${urlBase}/membro/${txtSpeakerId}`, {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                method: "PUT",
+                body: `nome=${nome}&apelido=${apelido}&email=${email}&password=${password}&confPassword=${confPassword}`
+            })
+
+            const newSpeaker = await response.json()
+        }
+        isNew = true
+        renderVoluntarios();
+        novo(0);
+        sms("Inserido com sucesso ...", 1);
+
+    });
 
     const renderVoluntarios = async () => {
         let strHtml = `
             <thead >
-                <tr><th class='w-100 text-center bg-warning' colspan='4'>Lista de Voluntarios</th></tr>
+                <tr><th class='w-100 text-center bg-warning' colspan='6'>Lista de Voluntarios</th></tr>
                 <tr class='bg-info'>
-                    <th class='w-2'>#</th>
-                    <th class='w-50'>Nome</th>
-                    <th class='w-38'>E-mail</th>              
+                    <th class='w-10'>#</th>
+                    <th class='w-30'>Nome</th>
+                    <th class='w-20'>Apelido</th>
+                    <th class='w-30'>E-mail</th>              
                     <th class='w-10'>Ações</th>              
                 </tr> 
             </thead><tbody>
         `
-        const response = await fetch(`${urlBase}/conferences/1/participants`)
+        const response = await fetch(`${urlBase}/voluntario/listar`)
         const participants = await response.json()
         let i = 1
         for (const participant of participants) {            
             strHtml += `
                 <tr>
-                    <td>${i}</td>
-                    <td>${participant.nomeParticipante}</td>
-                    <td>${participant.idParticipant}</td>
-                    <td><i id='${participant.idParticipant}' class='fas fa-trash-alt remove'></i></td>
+                    <td>${participant.key}</td>
+                    <td>${participant.nome}</td>
+                    <td>${participant.apelido}</td>
+                    <td>${participant.email}</td>
+                    <td><i id='${participant.key}' class='fas fa-trash-alt remove'></i></td>
                 </tr>
             `        
             i++
@@ -66,4 +111,27 @@ window.onload = () => {
         }       
     }
  renderVoluntarios()
+}
+function novo(op){
+
+    if (op==1){
+        document.getElementById("cartao").style.display = "block";
+        document.getElementById("btnNovo").style.display = "none";
+    }else {
+        document.getElementById("cartao").style.display = "none";
+        document.getElementById("btnNovo").style.display = "block";
+    }
+}
+
+function sms(sms, tipo){
+
+    let divSMS = document.getElementById("divSMS");
+    valor= '';
+    if(tipo==1){
+        valor= '<div class="alert alert-success">'+sms+'</div>';
+    }else{
+        valor=  '<div class="alert alert-danger">'+sms+'</div>';
+    }
+    divSMS.innerHTML=valor;
+    divSMS.style.display = "block";
 }
